@@ -6,11 +6,12 @@
  * Date: 09.05.14
  * Time: 17:17
  */
+
 function get_param(& $source, $key = null, $def = false) {
-    if ($key === null) {
-        return isset($source) ? $source : $def;
-    }
-    return isset($source[$key]) ? $source[$key] : $def;
+	if ($key === null) {
+		return isset($source) ? $source : $def;
+	}
+	return isset($source[$key]) ? $source[$key] : $def;
 }
 
 function date_valid($date) {

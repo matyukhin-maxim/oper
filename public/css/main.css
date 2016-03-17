@@ -600,3 +600,7 @@ div.growlUI h1, div.growlUI h2 {
 #row-error {
     padding-top: 20px;
 }
+
+a.must {
+    border: solid 2px darkorchid; !important;
+}

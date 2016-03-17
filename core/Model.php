@@ -14,14 +14,14 @@ class Model {
 
 	public function __construct() {
 
-		$dns = sprintf('mysql:host=%s;dbname=%s', 'tech-db', 'oper');
+		$dns = sprintf('mysql:host=%s;dbname=%s', 'localhost', 'oper');
 		self::$db = null;
 
 		$retry = 5;
 
 		while (--$retry && !self::$db) {
 			try {
-				self::$db = new PDO($dns, 'web-user', 'web-pass', array(
+				self::$db = new PDO($dns, 'root', 'fell1x', array(
 					PDO::ATTR_TIMEOUT => 5,
 					PDO::MYSQL_ATTR_INIT_COMMAND => 'set names utf8',
 				));

@@ -16,7 +16,6 @@ require_once 'core/Pager.php';
 require_once 'core/Session.php';
 Session::start();
 
-require_once 'core/Database.php';
 require_once 'core/AccessModel.php';
 require_once 'core/Model.php';
 require_once 'core/Controller.php';

@@ -4,7 +4,7 @@
             <div id="push"></div>
     </div>   
     
-    <div id="footer" class="text-center navbar-default">
+    <div id="footer" class="text-center navbar-default navbar-fixed-bottom">
        
       <div class="container">
           <p>Отдел <abbr title="55-88, 51-30, 50-98">ОИТ</abbr>. 

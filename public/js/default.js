@@ -1,6 +1,7 @@
 $(function () {
     
-    $('.disabled').click(function () {
+    $('.disabled').click(function (e) {
+        e.preventDefault();
         return false;
     });
 

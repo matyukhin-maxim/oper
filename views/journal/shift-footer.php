@@ -25,9 +25,14 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="btn-group btn-group-justified">
-                                <a href="/journal/compositions/" class="btn btn-default" title="Состав смены">Состав смены</a>
-                                <a href="/journal/equipment/" class="btn btn-default" title="Оборудование">Оборудование</a>
+                                <!--<a href="/journal/compositions/" class="btn btn-default" title="Состав смены">Состав смены</a>-->
+                                <!--<a href="/journal/equipment/" class="btn btn-default" title="Оборудование">Оборудование</a>-->
                                 <?php
+
+                                // Кнопки состава смены и оборудования
+                                echo $compBtn;
+                                echo $devsBtn;
+
                                     $extlist = get_param($extgroup, null, array());
                                     foreach ($extlist as $btn) {
                                         echo "$btn\n";

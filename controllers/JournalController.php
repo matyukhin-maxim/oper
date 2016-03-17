@@ -124,7 +124,20 @@ class Journal extends Controller {
             ));
             
             $this->data['candel'] = $this->isRoleGranted('ACE_MESSAGE_DELETE');
-            
+
+	        $mustC = get_param($_COOKIE, 'open-comp', 0) !== $this->open_shift_id;
+	        $mustD = get_param($_COOKIE, 'open-devs', 0) !== $this->open_shift_id;
+
+	        $this->data['compBtn'] =  CHtml::drawLink('Состав смены', array(
+		        'class' => 'btn btn-default ' . ( $mustC ? 'must' : ''),
+		        'href' => '/journal/compositions/',
+	        ));
+
+	        $this->data['devsBtn'] = CHtml::drawLink('Оборудование', array(
+		        'class' => 'btn btn-default ' . ( $mustD ? 'must' : ''),
+		        'href' => '/journal/equipment/',
+	        ));
+
             //$this->render('messages-sign-view', false);
             
             $this->render('messages'     . ($editmode ? '' : '-view'), false);
@@ -281,6 +294,10 @@ class Journal extends Controller {
                 $this->appendDebug(get_param($res, 'error'), 3);
             } else {
                 $this->appendDebug('Смена принята. Просмотреть отчет за предыдущую смену можно из архива.',2);
+
+	            // удаляем куки-флаги о просмотре состава смены и оборудования
+	            setcookie('open-comp', null, -1, '/');
+	            setcookie('open-devs', null, -1, '/');
             }
             
             $this->redirect(array(
@@ -409,8 +426,12 @@ class Journal extends Controller {
             // то сохраняем присланные данные
             $equip = get_param($_POST, 'equip');
             $result = $this->model->saveEquipment($equip, $this->open_shift_id);
-            if ($result > 0)    $this->appendDebug ('Данные по оборудованию сохранены',1);
-            else                $this->appendDebug ('Ошибка сохранения данных.');
+            if ($result > 0)    {
+	            $this->appendDebug ('Данные по оборудованию сохранены',1);
+
+	            // ставим куку-флаг о сохранении состава оборудования
+	            setcookie('open-devs', $this->open_shift_id , time() + 24 * 3600, '/');
+            } else                $this->appendDebug ('Ошибка сохранения данных.');
             $this->drawError();
         }
         
@@ -611,8 +632,13 @@ class Journal extends Controller {
                 $sdata = get_param($_POST, 'standin', array());
                 
                 $ok = $this->model->saveCompositions($info, $udata, $tdata, $sdata);
-                if ($ok)
-                    $this->appendDebug ('Состав смены успешно сохранен.',2);
+                if ($ok) {
+	                $this->appendDebug ('Состав смены успешно сохранен.',2);
+
+	                // ставим куку-флаг о сохранении состава смены
+	                setcookie('open-comp', $this->open_shift_id, time() + 24 * 3600, '/');
+                }
+
                 die($this->drawError());
             }
             
@@ -867,17 +893,5 @@ class Journal extends Controller {
         $fname = "oper_report_" . uniqid() . '.pdf';
         //$pdf->Output($fname, 'D');
         $pdf->Output();
-    }
-    
-    public function actionTest() {
-        $this->render('', false);
-        
-        $period = '20:00-08:00';
-        $ppart = preg_split('/[^\d]+/', $period);
-        $tpart = explode(':', $m_time);
-        
-        var_dump($ppart);
-        
-        $this->render('');
     }
 }

@@ -317,12 +317,16 @@ class Journal extends Controller {
             'keys' => array('title'=>'period'),
             'htmlOptions' => array(
                 'name' => 'sinterval',
+	            'id' => 'iselector',
+	            'required' => true,
             ),
         ));
         $this->data['pwatch'] = CHtml::drawCombo($watches, 1, array(
             'keys' => array('title'=>'abbr'),
             'htmlOptions' => array(
                 'name' => 'swatch',
+	            'id' => 'wselector',
+	            'required' => true,
             ),
         ));
 
@@ -894,4 +898,35 @@ class Journal extends Controller {
         //$pdf->Output($fname, 'D');
         $pdf->Output();
     }
+
+	public function actionCalc() {
+		// Расчет литеры выхты для указанной даты и интервала смены
+
+		$args = filter_input_array(INPUT_POST, [
+			'sdate' => FILTER_SANITIZE_STRING,
+			'sinterval' => [
+				'filter' => FILTER_VALIDATE_INT,
+				'options' => [
+					'min_range' => 1,
+					'max_range' => 2,
+					'default' => 1,
+				],
+			],
+		]);
+
+		$dateFormat = 'd.m.Y';
+		//       [А, В, А, Г, Б, Г, Б, А, В, А, В, Б, Г, Б, Г, В];
+		$wlist = [1, 3, 1, 4, 2, 4, 2, 1, 3, 1, 3, 2, 4, 2, 4, 3];
+		$wd = DateTime::createFromFormat($dateFormat, get_param($args, 'sdate')) ?:
+			  DateTime::createFromFormat($dateFormat, date($dateFormat));
+
+		// Цикличность смен - 16 вахт. На момент внедрения ближайшая точка начала цыкла была 7 марта...
+		$delta = $wd->diff(DateTime::createFromFormat($dateFormat, '07.03.2016'))->days;
+
+		// а теперь немного математики ;)
+		$idx = ($delta % 8) * 2 + get_param($args, 'sinterval', 1);
+		$args['sw'] = get_param($wlist, $idx - 1, 1); // 0-based
+
+		echo json_encode($args);
+	}
 }

@@ -11,6 +11,15 @@ $(function () {
     
     $('.modal').on('loaded.bs.modal', function () {
         $('#shift-date').datepicker();
+
+        // calc shift watch
+        $('#shift-date, #iselector').change(function (e) {
+            e.preventDefault();
+            $.post('/journal/calc/', $('input, select').serialize(),
+            function(data) {
+                $('#wselector').val(data.sw || 1);
+            }, 'json');
+        }).filter(':first').trigger('change');
     });
     
     $('#tpicker').timepicker();
@@ -35,7 +44,7 @@ $(function () {
             }, 900 * idx);
         });
     }, 10000);
-    
+
     //({
     //    message: '<h4><i class="glyphicon glyphicon-time"></i> Обработка...</h4>'
     //})

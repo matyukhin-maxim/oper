@@ -604,3 +604,8 @@ div.growlUI h1, div.growlUI h2 {
 a.must {
     border: solid 2px darkorchid; !important;
 }
+
+.control-label {
+    font-weight: bold;
+    padding-top: 7px;
+}

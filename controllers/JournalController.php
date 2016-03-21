@@ -925,7 +925,7 @@ class Journal extends Controller {
 
 		// а теперь немного математики ;)
 		$idx = ($delta % 8) * 2 + get_param($args, 'sinterval', 1);
-		$args['sw'] = get_param($wlist, $idx - 1, 1); // 0-based
+		$args['sw'] = get_param($wlist, $idx - 1, 0); // 0-based
 
 		echo json_encode($args);
 	}

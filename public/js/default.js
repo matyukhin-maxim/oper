@@ -18,6 +18,7 @@ $(function () {
             $.post('/journal/calc/', $('input, select').serialize(),
             function(data) {
                 $('#wselector').val(data.sw || 1);
+                //$('#iselector').val(data.sinterval || 1);
             }, 'json');
         }).filter(':first').trigger('change');
     });

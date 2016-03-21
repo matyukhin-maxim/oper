@@ -87,7 +87,7 @@ $(function () {
     });
         
     var pnl = $('.panel-message');
-    pnl.scrollTop(pnl[0].scrollHeight);
+    if (pnl.length) pnl.scrollTop(pnl[0].scrollHeight);
     //pnl.stop().animate({scrollTop:pnl[0].scrollHeight}, 2000, 'swing');
     
     var timeout;

@@ -23,7 +23,7 @@
                         <div class="alert alert-info text-center">
                             <i class="glyphicon glyphicon-info-sign"></i>
                             <span>
-                                текущий пользователь будет указн в качестве <strong>принявшего</strong> предыдущую смену
+                                текущий пользователь будет указан в качестве <strong>принявшего</strong> предыдущую смену
                             </span>
                         </div>
                     </div>

@@ -4,7 +4,9 @@ require_once 'models/JournalModel.php';
 
 // тестовый контроллер для переноса данных из базы старого журнала
 
-/** @property JournalModel $model  */
+/** @property JournalModel $model
+ *  @property AccessModel $mdb
+ */
 class Syncronization extends Controller {
 
     private $mdb;
@@ -407,5 +409,75 @@ class Syncronization extends Controller {
         
     }
 
+	/**
+	 * @param $statement PDOStatement
+	 * @return bool|array
+	 */
+	public function prepareData(& $statement) {
+
+		$info = $statement->errorInfo();
+		array_walk_recursive($info, 'charsetChange');
+
+		if (get_param($info, 0) !== '00000') {
+			var_dump($info);
+			return false;
+		}
+
+		$res = $statement->fetchAll();
+		array_walk_recursive($res, 'charsetChange');
+		return $res;
+	}
+
+	public function actionEarth() {
+
+		$this->mdb = new AccessModel('D:/OLD_MDB/ob_bu_for_import.mdb');
+		//$this->mdb = new AccessModel('D:/OLD_MDB/ojnsec_be_import.mdb');
+		$jid = 2;
+
+		$this->render('', false);
+
+		$stmt = $this->mdb->db->prepare('select * from ZN where Data >= :per');
+		$stmt->execute([
+			'per' => '2015-01-01',
+		]);
+		$data = $this->prepareData($stmt);
+
+		$etype = [
+			'ЗН'    => 1,
+			'П.З.'  => 3,
+			'ЗН КС' => 4,
+			'П.З..' => 3,
+			'Зак.'  => 2,
+		];
+
+		var_dump(count($data));
+		//var_dump($data);
+		$import = Model::$db->prepare('replace into earth_control
+			  (id, equipment, etype_id, num, date_on, user_on, date_off, user_off, journal_id)
+			  values (:eid, :equip, :etype, :num, :don, :uon, :dof, :uof, :jid)');
+
+		foreach ($data as $rec) {
+
+			$param = [
+				'eid' => get_param($rec, 'Sth', 1),
+				'equip' => mb_capitalize(get_param($rec, 'Oborudovanie')),
+				'etype' => get_param($etype, get_param($rec, 'TIP'), 1),
+				'num' => get_param($rec, 'Num'),
+				'don' => get_param($rec, 'Data'),
+				'dof' => get_param($rec, 'Data_sn', null),
+				'uon' => $this->findUserByName(get_param($rec, 'Familia')),
+				'uof' => $this->findUserByName(get_param($rec, 'Fam_ilia')),
+				'jid' => $jid,
+			];
+
+			if (get_param($param, 'uon')) {
+				$import->execute($param);
+				$this->prepareData($import);
+			}
+		}
+
+		var_dump($this->cache);
+		$this->render('');
+	}
 }
 

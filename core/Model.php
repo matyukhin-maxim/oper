@@ -47,7 +47,7 @@ class Model {
 		}
 	}
 
-	public function select($query, $param = array()) {
+	public function select($query, $param = array(), & $cnt = null) {
 
 		$sth = self::$db->prepare($query);
 
@@ -72,14 +72,15 @@ class Model {
 		}
 
 		$sth->execute();
-		$error = $this->errorInfo();
+		$error = $sth->errorInfo();
 
 		$data = $sth->fetchAll();
+		if (get_param($error, 2)) {
+			Controller::appendDebug(get_param($error, 2));
+		}
 
-		return array(
-			'data' => $data,
-			'error' => get_param($error, 2),
-		);
+		$cnt = $sth->rowCount();
+		return $data;
 	}
 
 }

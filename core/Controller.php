@@ -138,9 +138,13 @@ class Controller {
     }
 
 
-    public function redirect($param = array()) {
+    public function redirect($param = null) {
 
-        //Session::set('stack', $this->stack);
+	    if (is_null($param)) $param = '';
+	    if (!is_array($param)) {
+		    $param = ['location' => $param];
+	    }
+
         
         if (self::isAjax()) {
             // если страница запрошена аяксом, то редирект работать не должен

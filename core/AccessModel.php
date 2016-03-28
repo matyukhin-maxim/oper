@@ -25,7 +25,10 @@ class AccessModel {
         } catch (PDOException $e) {
             $this->db = null;
             var_dump($dns);
-            die($e->getMessage());
+	        $error = [$e->getMessage()];
+	        array_walk_recursive($error, 'charsetChange');
+	        var_dump($error);
+            die();
         }
     }
        

@@ -104,7 +104,13 @@ class Journal extends Controller {
             // временем конца мены (т.е. либо 8:00, либо 20:00)
             $interval = explode('-',get_param($shift_info, 'period'));
             $this->data['time_agree'] = trim(get_param($interval, 1));
-            
+
+	        if ($editmode && $this->isRoleGranted('ACE_EARTH_CONTROL')) {
+		        $this->data['printgroup'][] = CHtml::drawLink('Заземления', array(
+			        'class' => 'btn btn-primary strong',
+			        'href' => '/journal/earth/',
+		        ));
+	        }
             
             // КНОПКИ ПЕЧАТИ ОТЧЕТА
             $this->data['printgroup'][] = CHtml::drawLink('Просмотр отчета', array(
@@ -915,12 +921,13 @@ class Journal extends Controller {
 		]);
 
 		$dateFormat = 'd.m.Y';
+		// Цикличность смен - 16 вахт. На момент внедрения ближайшая точка начала цыкла была 7 марта...
+		// от нее и будем отталкиваться
 		//       [А, В, А, Г, Б, Г, Б, А, В, А, В, Б, Г, Б, Г, В];
 		$wlist = [1, 3, 1, 4, 2, 4, 2, 1, 3, 1, 3, 2, 4, 2, 4, 3];
 		$wd = DateTime::createFromFormat($dateFormat, get_param($args, 'sdate')) ?:
 			  DateTime::createFromFormat($dateFormat, date($dateFormat));
 
-		// Цикличность смен - 16 вахт. На момент внедрения ближайшая точка начала цыкла была 7 марта...
 		$delta = $wd->diff(DateTime::createFromFormat($dateFormat, '07.03.2016'))->days;
 
 		// а теперь немного математики ;)
@@ -928,5 +935,219 @@ class Journal extends Controller {
 		$args['sw'] = get_param($wlist, $idx - 1, 0); // 0-based
 
 		echo json_encode($args);
+	}
+
+	public function actionEarth() {
+
+		//if (!$this->isRoleGranted('ACE_EARTH_CONTROL')) {
+		//	$this->appendDebug('Нет прав на просмотр данной информации.', 1);
+		//	$this->redirect(['back' => 1]);
+		//}
+
+		$workJournal = get_param($this->arguments, 'journal', $this->journal_id);
+
+		$this->data['jname'] = $this->model->getJournalFullName($workJournal);
+		$this->data['subtitle'] = ':: Установленные заземления';
+		$this->render('index',false);
+
+		$list = $this->model->getEarthList($workJournal);
+		$types = $this->model->getEarthTypes();
+		$dems = $this->model->getAllUsersByPositions([199]); //  Список ДЕМ ОРУ
+		$dems = get_param($dems, 199, []);
+
+		$this->data['earthlist'] = '';
+		if (count($list) == 0) {
+			$this->data['earthlist'] = CHtml::createTag('tr', [
+				'class' => 'warning strong text-center'
+			],CHtml::createTag('td', ['colspan' => 6], 'Нет данных'));
+		}
+
+		// Удалять можем только если есть право на редактирование указанного журнала
+		// и есть право на заземления в целом
+		$grantDel = $this->isRoleGranted('ACE_EARTH_CONTROL', $workJournal);
+
+		foreach ($list as $item) {
+			$eid = get_param($item, 'id', -1);
+
+			$buttonOff = $grantDel ? CHtml::createTag('button', [
+				'class' => 'btn btn-default btn-block btn-sm',
+				'data-toggle' => 'modal',
+				'data-target' => '#universal',
+				'data-keyboard' => false,
+				'data-backdrop' => 'static',
+				'href' => $this->generateURI('journal/earthDelete', ['id' => $eid, 'journal' => $workJournal]),
+			], 'Снять') : '';
+
+			$this->data['earthlist'] .= CHtml::createTag('tr', ['class'=>'text-center'], [
+				CHtml::createTag('td', ['class' => 'col-xs-5 text-left'], get_param($item, 'equipment')),
+				CHtml::createTag('td', ['class' => 'col-xs-1'], get_param($item, 'shortname')),
+				CHtml::createTag('td', ['class' => 'col-xs-1 text-right'], get_param($item, 'num')),
+				CHtml::createTag('td', ['class' => 'col-xs-2'], get_param($item, 'odate')),
+				CHtml::createTag('td', ['class' => 'col-xs-2'], get_param($item, 'ou')),
+				CHtml::createTag('td', ['class' => 'col-xs-1'], [
+					$buttonOff,
+				]),
+			]);
+		}
+
+		$this->data['earthEquip'] = CHtml::createTag('input', [
+			'class' => 'form-control input-sm',
+			'name' => 'e_equip',
+			'required' => true,
+		]);
+		$this->data['earthTypes'] = CHtml::drawCombo($types, null, [
+			'default' => '-',
+			'htmlOptions' => [
+				'class' => 'form-control input-sm',
+				'name' => 'e_type',
+				'required' => true,
+			],
+		]);
+		$this->data['earthNumber'] = CHtml::createTag('input', [
+			'class' => 'form-control input-sm text-center',
+			'name' => 'e_num',
+			'type' => 'number',
+		]);
+		$this->data['earthDate'] = CHtml::createTag('input', [
+			'class' => 'form-control input-sm datepicker mtime',
+			'name' => 'e_date',
+			'value' => date('d.m.Y'),
+			'readonly' => true,
+		]);
+		$this->data['earthUsers'] = CHtml::drawCombo($dems, null, [
+			'keys' => ['title' => 'fio'],
+			'htmlOptions' => [
+				'class' => 'form-control input-sm',
+				'name' => 'e_dem',
+				'required' => true,
+			]
+		]);
+		$this->data['jid'] = $workJournal;
+
+		$this->render('earth-list' . ($grantDel ? '' : '-view'), false);
+
+		// панелька с итогами
+		$this->data['department'] = 'ОРУ';
+		$this->data['earthTotal'] = '';
+		$total = $this->model->getEarthTotal(2);
+		foreach ($total as $row) {
+			$this->data['earthTotal'] .= CHtml::createTag('li', ['class' => 'list-group-item'], [
+				CHtml::createTag('div', ['class' => 'pull-right strong'], get_param($row, 'res')),
+				get_param($row, 'title'),
+			]);
+		}
+		$oru = $this->renderPartial('earth-total');
+
+		$this->data['department'] = 'ЧТЭЦ';
+		$this->data['earthTotal'] = '';
+		$total = $this->model->getEarthTotal(10);
+		foreach ($total as $row) {
+			$this->data['earthTotal'] .= CHtml::createTag('li', ['class' => 'list-group-item'], [
+				CHtml::createTag('div', ['class' => 'pull-right strong'], get_param($row, 'res')),
+				get_param($row, 'title'),
+			]);
+		}
+		$chu = $this->renderPartial('earth-total');
+
+		$this->data['department'] = 'Главный корпус';
+		$this->data['earthTotal'] = '';
+		$total = $this->model->getEarthTotal(1);
+		foreach ($total as $row) {
+			$this->data['earthTotal'] .= CHtml::createTag('li', ['class' => 'list-group-item'], [
+				CHtml::createTag('div', ['class' => 'pull-right strong'], get_param($row, 'res')),
+				get_param($row, 'title'),
+			]);
+		}
+		$gk = $this->renderPartial('earth-total');
+
+		echo CHtml::createTag('div', ['class' => 'row'], [$oru, $gk, $chu]);
+
+		$this->render('');
+	}
+
+	public function actionEarthAdd() {
+
+		// параметры нового заземления
+		$params = filter_input_array(INPUT_POST, [
+			'e_equip' => FILTER_SANITIZE_STRING,
+			'e_type' => [
+				'filter' => FILTER_VALIDATE_INT,
+				'options' => [
+					'min_range' => 1,
+					'max_range' => 4,
+					'default' => 1,
+				],
+			],
+			'e_num' => FILTER_SANITIZE_STRING,
+			'e_date' => FILTER_SANITIZE_STRING,
+			'e_dem' => FILTER_VALIDATE_INT,
+			'jid' => FILTER_VALIDATE_INT,
+		]);
+
+		$params['e_date'] = date2mysql($params['e_date']);
+
+		$ans = $this->model->setupEarth($params);
+		if (gettype($ans) === 'string') $this->appendDebug($ans, 1);
+
+		$this->redirect(['back' => 1]);
+	}
+
+	public function actionEarthDelete() {
+
+		$eid = filter_var(get_param($this->arguments, 'id'), FILTER_VALIDATE_INT);
+		$jid = get_param($this->arguments, 'journal', $this->journal_id);
+
+		if ($this->isPOST()) {
+			// POSTом если сюда попали - значит снимаем заземление
+
+			$param = filter_input_array(INPUT_POST, [
+				'e_date' => FILTER_SANITIZE_STRING,
+				'e_dem' => FILTER_VALIDATE_INT,
+				'eid' => FILTER_VALIDATE_INT,
+				'jid' => FILTER_VALIDATE_INT,
+			]);
+
+			$res = $this->model->takeoffEarth($param);
+
+			if ($res) self::appendDebug('Информация сохранена', 1);
+
+			$this->redirect(['back' => 1]);
+			die;
+		}
+
+		$info = $this->model->getEarthInfo($eid, $jid);
+
+		if (!$info) {
+
+			// Если по id ничего не нашли, то скажем об этом пользователю (точнее этому жулику)
+			$this->data['emessage'] = "Информация по запрошенному заземлению не найдена";
+			echo $this->renderPartial('../error_modal');
+			return;
+		}
+
+		$dems = $this->model->getAllUsersByPositions([199]); //  Список ДЕМ ОРУ
+		$dems = get_param($dems, 199, []);
+
+		$this->data['earthUsers'] = CHtml::drawCombo($dems, null, [
+			'keys' => ['title' => 'fio'],
+			'htmlOptions' => [
+				'class' => 'form-control input-sm',
+				'name' => 'e_dem',
+				'required' => true,
+			]
+		]);
+
+		$this->data['earthDate'] = CHtml::createTag('input', [
+			'class' => 'form-control input-sm datepicker mtime',
+			'name' => 'e_date',
+			'value' => date('d.m.Y'),
+			'readonly' => true,
+		]);
+
+		$this->data['e_equip'] = get_param($info, 'equipment');
+		$this->data['eid'] = $eid;
+		$this->data['jid'] = $jid;
+
+		echo $this->renderPartial('modal-earth-del');
 	}
 }

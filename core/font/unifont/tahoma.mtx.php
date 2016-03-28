@@ -13,7 +13,7 @@ $desc=array (
 );
 $up=-83;
 $ut=63;
-$ttffile='D:\inetpub\Hosts\oper-journal.asu.ngres\www\core/font/unifont/Tahoma.ttf';
+$ttffile='D:\WEB\oper-journal.asu.ngres\core/font/unifont/Tahoma.ttf';
 $originalsize=749368;
 $fontkey='tahoma';
 ?>

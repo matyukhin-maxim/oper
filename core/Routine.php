@@ -83,3 +83,10 @@ function trimHereDoc($txt) {
     // т.к. при копипасте с word`а нсс копируют ТАБы
     return implode("\n", array_map('trim', explode("\n", $txt)));
 }
+
+function mb_capitalize($str) {
+
+	$str = trim($str);
+	$fc = mb_strtoupper(mb_substr($str, 0, 1));
+	return $fc . mb_substr($str, 1);
+}

@@ -2,7 +2,8 @@
 
 set_time_limit(0);
 //error_reporting(0);
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
+//error_reporting(E_ALL);
 
 //define('ROOT',      dirname($_SERVER['PHP_SELF']) . '/');
 define('ROOT',      '/');

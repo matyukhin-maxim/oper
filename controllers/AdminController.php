@@ -39,7 +39,7 @@ class Admin extends Controller {
         ));        
         
         $result = $this->model->getAll($text, $page, $limit);
-        $this->data['users'] = $result['data'];
+        $this->data['users'] = $result;
         
         echo $this->renderPartial('ulist');
         

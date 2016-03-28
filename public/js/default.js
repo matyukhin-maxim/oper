@@ -11,6 +11,7 @@ $(function () {
     
     $('.modal').on('loaded.bs.modal', function () {
         $('#shift-date').datepicker();
+        $('.datepicker').datepicker();
 
         // calc shift watch
         $('#shift-date, #iselector').change(function (e) {
@@ -51,5 +52,7 @@ $(function () {
     //})
     
     //$(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+
+    $('.datepicker').datepicker();
     
 });

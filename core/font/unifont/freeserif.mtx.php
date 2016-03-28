@@ -13,7 +13,7 @@ $desc=array (
 );
 $up=-125;
 $ut=50;
-$ttffile='D:\inetpub\Hosts\oper-journal.asu.ngres\www\core/font/unifont/FreeSerif.ttf';
+$ttffile='D:\WEB\oper-journal.asu.ngres\core/font/unifont/FreeSerif.ttf';
 $originalsize=1687516;
 $fontkey='freeserif';
 ?>

@@ -502,6 +502,7 @@ textarea.equip-content, div.equip-content {
 .nopad, .nopad > .form-control {
     margin: 1px 0;
     cursor: default;
+    /*padding: 0;*/
 }
 
 .bg-warning {
@@ -608,4 +609,39 @@ a.must {
 .control-label {
     font-weight: bold;
     padding-top: 7px;
+}
+
+.strong {
+    font-weight: bold;
+}
+
+.input-xs,
+.form-group-xs .form-control {
+    height: 25px;
+    padding: 2px 5px;
+    font-size: 11px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.compact, .compact > [class*="col-"] {
+    padding: 7px;
+}
+
+.table.compact > tbody > tr > td[class*="col-"] {
+
+    padding: 2px; !important;
+}
+
+.row.compact > [class*="col-"] {
+    padding: 0 1px;
+}
+
+.wrap-button {
+
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overfollow: elliplis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

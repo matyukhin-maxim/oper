@@ -89,4 +89,23 @@ class CHtml {
         return $result;
     }
 
+
+	public static function createTag($tagName, $htmlOptions = [], $content = []) {
+
+		if (!is_array($content)) $content = array($content);
+		if (!is_array($htmlOptions)) $htmlOptions = array($htmlOptions);
+
+		$result = '<' . $tagName;
+		foreach ($htmlOptions as $param => $option) {
+			$result .= $option !== null ? sprintf(' %s="%s"', $param, $option) : sprintf(' %s', $param);
+		}
+
+		if (!count($content)) return $result . '/>' . PHP_EOL; // <input type="text"/>
+
+		$result .= '>' . PHP_EOL;
+		$result .= join(PHP_EOL, $content);
+		$result .= '</' . $tagName . '>' . PHP_EOL;
+
+		return $result;
+	}
 }

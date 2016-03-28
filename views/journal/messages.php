@@ -52,7 +52,7 @@ REMOVEMSG;
                                     <input type="text" class="form-control datetimepicker" value="$m_date" mid="$mid" readonly/>
                                     <input type="text" class="form-control" value="$m_time" id="t$mid" readonly/>
                                 </td>
-                                <td class="mctrl"><textarea class="message-content" mid="$mid">$mtext</textarea>
+                                <td class="mctrl"><textarea class="message-content form-control" mid="$mid">$mtext</textarea>
                                     $dbtn
                                     <div class="status">
                                         <button class="btn btn-primary btn-sm">

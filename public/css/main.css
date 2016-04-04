@@ -628,7 +628,7 @@ a.must {
     padding: 7px;
 }
 
-.table.compact > tbody > tr > td[class*="col-"] {
+.table.compact > tbody > tr > td {
 
     padding: 2px; !important;
 }
@@ -644,4 +644,11 @@ a.must {
     -o-text-overfollow: elliplis;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+@media (min-width: 1400px) {
+
+    .container {
+        width: 1380px;
+    }
 }

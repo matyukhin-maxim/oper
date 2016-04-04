@@ -92,6 +92,7 @@ class CHtml {
 
 	public static function createTag($tagName, $htmlOptions = [], $content = []) {
 
+		if (is_null($htmlOptions)) $htmlOptions = [];
 		if (!is_array($content)) $content = array($content);
 		if (!is_array($htmlOptions)) $htmlOptions = array($htmlOptions);
 

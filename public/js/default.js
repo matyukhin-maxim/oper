@@ -54,5 +54,15 @@ $(function () {
     //$(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 
     $('.datepicker').datepicker();
-    
+
+
+    /*
+    var panel = $('.panel-message');
+    if (panel.length) {
+        var div = panel[0];
+        var offset = div.scrollHeight - parseInt($(div).css('max-height'));
+        if (offset) $('.panel-heading').css('padding-right', '35px');
+        console.info(offset);
+    }
+    */
 });

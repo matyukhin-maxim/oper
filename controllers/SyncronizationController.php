@@ -430,9 +430,10 @@ class Syncronization extends Controller {
 
 	public function actionEarth() {
 
-		$this->mdb = new AccessModel('D:/OLD_MDB/ob_bu_for_import.mdb');
-		//$this->mdb = new AccessModel('D:/OLD_MDB/ojnsec_be_import.mdb');
-		$jid = 2;
+		//$this->mdb = new AccessModel('D:/OLD_MDB/ob_bu_for_import.mdb');
+		//$jid = 25;
+		$this->mdb = new AccessModel('D:/OLD_MDB/bd_mp.mdb');
+		$jid = 27;
 
 		$this->render('', false);
 
@@ -450,13 +451,21 @@ class Syncronization extends Controller {
 			'Зак.'  => 2,
 		];
 
+		$places = Model::$db->prepare('select * from earth_place');
+		$places->execute();
+		$pdata = $places->fetchAll();
+		$eplace = array_column($pdata, 'id', 'description');
+
+
 		var_dump(count($data));
 		//var_dump($data);
 		$import = Model::$db->prepare('replace into earth_control
-			  (id, equipment, etype_id, num, date_on, user_on, date_off, user_off, journal_id)
-			  values (:eid, :equip, :etype, :num, :don, :uon, :dof, :uof, :jid)');
+			  (id, equipment, etype_id, num, date_on, user_on, date_off, user_off, journal_id, place_id)
+			  values (:eid, :equip, :etype, :num, :don, :uon, :dof, :uof, :jid, :place)');
 
 		foreach ($data as $rec) {
+
+			$cpl = get_param($rec, 'mtsto');
 
 			$param = [
 				'eid' => get_param($rec, 'Sth', 1),
@@ -468,8 +477,10 @@ class Syncronization extends Controller {
 				'uon' => $this->findUserByName(get_param($rec, 'Familia')),
 				'uof' => $this->findUserByName(get_param($rec, 'Fam_ilia')),
 				'jid' => $jid,
+				'place' => $eplace ? get_param($eplace, $cpl, 0) : 0,
 			];
 
+			//var_dump($param);
 			if (get_param($param, 'uon')) {
 				$import->execute($param);
 				$this->prepareData($import);

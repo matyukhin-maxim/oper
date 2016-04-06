@@ -400,7 +400,7 @@ class JournalModel extends Model {
 		if ($join) {
 			$result = [];
 			foreach ($data as $pid => $users) $result += array_column($users, 'fio', 'id');
-			sort($result);
+			asort($result);
 			return $result;
 		}
 

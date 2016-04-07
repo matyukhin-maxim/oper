@@ -50,6 +50,8 @@ class Controller {
             'bootstrap.min',
             'default',
             'activetimer',
+	        'moment.min',
+	        'moment-ru',
         );
         
     }

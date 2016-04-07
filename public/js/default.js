@@ -5,6 +5,8 @@ $(function () {
         return false;
     });
 
+    moment.locale('ru');
+
     $('.modal').on('hide.bs.modal', function (e) {
         $(this).removeData('bs.modal');
     });

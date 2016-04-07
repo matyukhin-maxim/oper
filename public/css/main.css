@@ -615,6 +615,10 @@ a.must {
     font-weight: bold;
 }
 
+.italic {
+    font-style: italic;
+}
+
 .input-xs,
 .form-group-xs .form-control {
     height: 25px;
@@ -652,3 +656,7 @@ a.must {
         width: 1380px;
     }
 }
+
+/*.alert .form-control {*/
+    /*background-color: transparent; !important;*/
+/*}*/

@@ -78,6 +78,12 @@ function date2human($pdate, $pformat = 'Y-m-d') {
     return $result;
 }
 
+function date2format($pdate, $i_fmt = 'Y-m-d', $o_fmt = 'd.m.Y') {
+
+	$dt = DateTime::createFromFormat($i_fmt, $pdate);
+	return $dt ? $dt->format($o_fmt) : date($o_fmt);
+}
+
 function trimHereDoc($txt) {
     // разбиваем текст по строками, и удаляем пробелы в каждой
     // т.к. при копипасте с word`а нсс копируют ТАБы

@@ -105,6 +105,12 @@ class Journal extends Controller {
             $interval = explode('-',get_param($shift_info, 'period'));
             $this->data['time_agree'] = trim(get_param($interval, 1));
 
+	        // У НСЭЦ, НСС и МПГК будет еще и кнопка с утечками
+	        if (in_array($this->journal_id, [1, 2, 27])) $this->data['printgroup'][] = CHtml::drawLink('Утечки', [
+		        'class' => 'btn btn-default',
+		        'href' => '/leak/',
+	        ]);
+
 	        if ($this->isRoleGranted('ACE_EARTH_CONTROL')) {
 		        $this->data['printgroup'][] = CHtml::drawLink('Заземления', array(
 			        'class' => 'btn btn-primary strong',

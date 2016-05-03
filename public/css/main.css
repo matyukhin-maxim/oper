@@ -657,6 +657,7 @@ a.must {
     }
 }
 
-/*.alert .form-control {*/
-    /*background-color: transparent; !important;*/
-/*}*/
+.dropdown-menu {
+    background-color: snow;
+    border: 1px solid rgba(0, 45, 105, 0.40);
+}

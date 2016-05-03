@@ -9,11 +9,13 @@
                     <form method="post" autocomplete="off" action="<?= createURL('', 'auth/login');?>">
                         <fieldset>
                             <div class="form-group">
+	                            <label class="control--label">Фамилия</label>
                                 <input id="autologin" class="form-control" placeholder="Начните набирать фамилию.." name="login" type="text" 
                                        autofocus required>
                                 <input id="userid" name="userid" type="hidden" />
                             </div>                           
                             <div class="form-group">
+	                            <label class="control--label">Пароль</label>
                                 <input id="upass" class="form-control" placeholder="Пароль" name="password" type="password" value="" required>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>

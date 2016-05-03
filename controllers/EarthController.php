@@ -10,7 +10,7 @@
 // Идентификаторы журналов, в которых есть раздел с заземлением
 define('JRN_ORU',   25);    // ДЭМ ОРУ
 define('JRN_MGK',   27);    // МПГК
-define('JRN_CHU',   40);    // ДЭМ ЧТЭЦ
+define('JRN_CHU',   28);    // ДЭМ ЧТЭЦ
 
 require_once 'models/JournalModel.php';
 
@@ -43,7 +43,7 @@ class Earth extends Controller {
 		$positions = [
 			JRN_ORU => [197, 198, 199],  // ДЭМ ОРУ
 			JRN_MGK => [197, 198, 199],  // МПГК
-			JRN_CHU => [200],            // ДЭМ ЧТЭЦ
+			JRN_CHU => [2074],            // ДЭМ ЧТЭЦ
 		];
 
 		// Если id текущего журнала нет в вышестоящем списке, то редактировать заземления нельзя даже если есть право..
@@ -124,10 +124,15 @@ class Earth extends Controller {
 
 		$this->render("list$affix", false);
 
+		// НСС ЧТЭЦ, НС ЭЦ ЧТЭЦ и ДЭМ ЧТЭЦ видят только ЧТЭЦ
+		if (in_array($this->journal_id, [10, 20, JRN_CHU]))
+			echo CHtml::createTag('div', ['class' => 'row'], [
+				$this->drawSummary('Заземленя ЧТЭЦ', JRN_CHU),
+			]);
+		else
 		echo CHtml::createTag('div', ['class' => 'row'], [
 			$this->drawSummary('ОРУ', JRN_ORU),
 			$this->drawSummary('Главный корпус', JRN_MGK),
-			//$this->drawSummary('ЧТЭЦ', JRN_CHU),
 		]);
 
 		$this->render('');
@@ -154,8 +159,6 @@ class Earth extends Controller {
 		]);
 
 		$params['e_date'] = date2mysql($params['e_date']);
-
-		var_dump($params);
 
 		$this->model->setupEarth($params);
 		$this->redirect(['back' => 1]);

@@ -21,7 +21,7 @@ class EarthModel extends Model {
 			WHERE c.deleted = 0
 				AND c.journal_id = :jid
 				AND c.date_off IS NULL
-			ORDER BY c.date_on DESC ', ['jid' => $journal_id]);
+			ORDER BY t.id, c.date_on DESC ', ['jid' => $journal_id]);
 
 		return $res;
 	}

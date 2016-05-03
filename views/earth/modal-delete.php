@@ -26,9 +26,9 @@
 	</div>
 	<div class="modal-footer clearfix">
 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
 			<input type="hidden" name="eid" value="<?= $eid; ?>">
 			<input type="hidden" name="jid" value="<?= $jid; ?>">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
 			<button type="submit" class="btn btn-primary">Сохранить</button>
 		</div>
 	</div>

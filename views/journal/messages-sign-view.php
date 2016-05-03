@@ -23,33 +23,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    
-                        <?php
-                        if (!$messages) echo <<< NOMSG
-                            <tr class="warning">
-                                <td colspan="2">
-                                    Сообщений нет.
-                                </td>
-                            </tr>
-NOMSG;
-                        foreach ($messages as $item) {
-                            $mtext = nl2br(get_param($item, 'comment'));
-                            $mdate = get_param($item, 'mdate');
-                            
-                            $m_date = get_param($item,'md');
-                            $m_time = get_param($item,'mt');
-                            
-                            $special = (int)get_param($item, 'special') === 1 ? 'special' : '';
-                            $mid = get_param($item, 'id');
-                            echo <<< MLINE
-                            <tr class="$special">
-                                <td class="text-center">
-                                    $mdate
-                                </td>
-                                <td>$mtext</td>
-                            </tr>
-MLINE;
-                        }?>
+                    <?= $messageList; ?>
                     </tbody>
                 </table>
             </div>

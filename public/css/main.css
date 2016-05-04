@@ -374,7 +374,7 @@ select::-ms-expand {
 
 select.form-control {
     //height: 34px;
-    padding: 0 4px;
+    padding: 5px 4px;
 }
 
 .table {
@@ -446,7 +446,7 @@ textarea.message-content {
 
 .mtime .form-control, .form-control.mtime {
     text-align: center;
-    padding: 2px 1px;
+    /*padding: 2px 1px;*/
     font-size: 12px;
     font-weight: bold;
     background: transparent;
@@ -660,4 +660,8 @@ a.must {
 .dropdown-menu {
     background-color: snow;
     border: 1px solid rgba(0, 45, 105, 0.40);
+}
+
+a.btn-default {
+    background: none;
 }

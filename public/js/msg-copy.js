@@ -25,7 +25,7 @@ $(function () {
             return btn.data('check') ? btn.trigger('click').data('id') : null;
         }).toArray();
 
-        console.info(ids);
+        // console.info(ids);
         // шлем запрос серверу, который все это дело обработет
         $.ajax({
             type: 'POST',

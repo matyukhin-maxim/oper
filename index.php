@@ -7,10 +7,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 //define('ROOT',      dirname($_SERVER['PHP_SELF']) . '/');
 define('ROOT',      '/');
+define('PASSKEY', 'mosAvFy56IUeANR3hEP3hWaA0U4r5Kuk');
 
 require_once 'core/TFPDF.php';
 require_once 'core/Routine.php';
 require_once 'core/CHtml.php';
+require_once 'core/Cipher.php';
 
 require_once 'core/Pager.php';
 
@@ -25,7 +27,7 @@ require_once 'core/Controller.php';
 
 // запоминаем какая страница была запрошена
 // чтобы вернутся на нее, если авторизация не выполненеа
-$query = strtolower(rtrim(get_param($_GET,'url','journal'),'/'));
+$query = (rtrim(get_param($_GET,'url','journal'),'/'));
 $url = explode('/',$query);
 
 //if (!Controller::isAjax() && $url[0] !== 'auth')

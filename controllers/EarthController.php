@@ -28,8 +28,8 @@ class Earth extends Controller {
 		$this->helper = new JournalModel();
 
 		$this->journal_id = filter_var(Session::get('jid'), FILTER_VALIDATE_INT);
-		if (!$this->authdata) $this->redirect('auth/');
-		if (!$this->journal_id) $this->redirect('auth/select/');
+		if (!$this->authdata) $this->redirect('/auth/');
+		if (!$this->journal_id) $this->redirect('/auth/select/');
 
 		if (!$this->isRoleGranted('ACE_EARTH_CONTROL')) {
 			$this->appendDebug('Нет доступа к этому разделу!');

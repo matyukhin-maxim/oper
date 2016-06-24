@@ -18,13 +18,13 @@ class Journal extends Controller {
 		// если сюда пришел не авторизованный пользователь, то шлем его на.. (авторизацию)
 		if ($this->authdata === false)
 			$this->redirect(array(
-				'location' => 'auth/',
+				'location' => '/auth/',
 			));
 
 		// если журнал не выбран, то отправляем пользователя, на страницу выбора
 		if ($this->journal_id <= 0)
 			$this->redirect(array(
-				'location' => 'auth/select/',
+				'location' => '/auth/select/',
 			));
 
 		// если какимто образом оказался выбран журнал, прав на который у пользователя нет,
@@ -32,7 +32,7 @@ class Journal extends Controller {
 		if (!$this->isJournalGranted($this->journal_id)) {
 			$this->appendDebug('Нет прав на просмотр выбранного журнала!');
 			$this->redirect(array(
-				'location' => 'auth/select/',
+				'location' => '/auth/select/',
 			));
 		}
 
@@ -53,7 +53,7 @@ class Journal extends Controller {
 		if (!$this->isRoleGranted('ACE_OPEN_SHIFT_VIEW')) {
 			//$this->appendDebug('Нет прав на просмотр оперативной смены.', 1);
 			$this->redirect(array(
-				'location' => $this->selfurl . 'archive/',
+				'location' => $this->generateURI($this->selfurl . 'archive/'),
 			));
 		}
 
@@ -70,7 +70,7 @@ class Journal extends Controller {
 
 			if (!$editmode && $this->open_shift_id > 0)
 				$this->redirect(array(
-					'location' => $this->selfurl . 'preview/',
+					'location' => $this->generateURI($this->selfurl . 'preview/'),
 				));
 		}
 

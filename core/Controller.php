@@ -142,7 +142,7 @@ class Controller {
 
     public function redirect($param = null) {
 
-	    if (is_null($param)) $param = '';
+	    if (is_null($param)) $param = '/';
 	    if (!is_array($param)) {
 		    $param = ['location' => $param];
 	    }
@@ -154,7 +154,8 @@ class Controller {
             die($this->renderPartial('../modal-message'));
         }
 
-        $location = ROOT . get_param($param, 'location', '');
+
+        $location = get_param($param, 'location', '');
         if (get_param($param, 'back') === 1)
             $location = get_param($_SERVER, 'HTTP_REFERER', $location);
         if (get_param($param, 'soft') === 1) {

@@ -49,11 +49,13 @@ class Auth extends Controller {
      */
     public function actionIndex() {
 
-        Session::del('auth');
-        
+        //Session::del('auth');
+	    //$this->actionOpenID();
+	    header("Location: http://openid.asu.ngres/");
+
         // добавляем скрипт автозаполнения ввода фамилии
-        $this->js[] = 'autocomplete';
-        $this->render('login');
+        //$this->js[] = 'autocomplete';
+        //$this->render('login');
     }
 
     /**
@@ -69,7 +71,7 @@ class Auth extends Controller {
             // то делать тут нечего. 
             // по идее сюда попасть не должны, т.к. поля required, но на всякий случай..
             $this->redirect(array(
-                'location' => 'auth/',
+                'location' => '/auth/',
             ));
         }
 
@@ -87,16 +89,12 @@ class Auth extends Controller {
                 // Если пароль дефолтный, то отправим на страцицу смены пароля
                 $this->appendDebug('Ваш пароль не надежен. Его нужно изменить!', 3);
                 $this->redirect(array(
-                    'location' => $this->selfurl . 'newpassword/',
+                    'location' => $this->generateURI($this->selfurl . 'newpassword/'),
                 ));
             }
         }
-        
-        // посмотрим адрес из сессии, куда ши до авторизации
-        $location = Session::get('query', '');
-        $this->redirect(array(
-            'location' => $location,
-        ));
+
+        $this->redirect();
         // (если авторизация не прошла, то оттуда будет редирект на авторизацию,
         // а из сесии покажется ошибка)
     }
@@ -182,7 +180,7 @@ class Auth extends Controller {
             Session::set('jid', $depid);
         }
         
-        $loc = $this->isRoleGranted('ACE_OPEN_SHIFT_VIEW') ? 'journal/' : 'journal/archive/';
+        $loc = $this->isRoleGranted('ACE_OPEN_SHIFT_VIEW') ? '/journal/' : '/journal/archive/';
         
         $this->redirect(array(
             'location' => $loc,
@@ -199,7 +197,7 @@ class Auth extends Controller {
         // если пользователь не авторизован, то шлем...
         if ($this->authdata === false)
             $this->redirect(array(
-                'location' => 'auth/',
+                'location' => '/auth/',
             ));
         
         // получим список журналов доступных для пользователя,
@@ -207,5 +205,50 @@ class Auth extends Controller {
         $this->data['journals'] = get_param($this->authdata, 'journals');
         $this->render('journal-list');
     }
+
+	public function actionOpenID() {
+
+		Session::destroy(true);
+
+		$secure = get_param($this->arguments, 'token');
+		$message = '';
+		$this->render('', false);
+
+		if (!$secure) $message = 'Отсутствуют авторизационные данные';
+		else {
+			// иначе - расшифровываем
+			$plain = Cipher::decode($secure, PASSKEY);
+			//var_dump($plain);
+			if (!$plain) $message = 'Ошибка при расшифровке данных.';
+			else {
+
+				// Проверка срока годности
+				$dt = new DateTime();
+				$dt->add(DateInterval::createFromDateString('5 minutes'));
+
+				$expire = get_param($plain, 1) > $dt->format('Y-m-d H:i');
+				$uid = get_param($plain, 0);
+
+				//if ($expire) $message = 'Срок авторизации истек. Попробуйте еще раз.';
+
+				$this->authdata = $this->model->openAuth($uid);
+				if ($this->authdata) {
+					Session::set('auth', $this->authdata);
+				} else $message = 'Для данного сайта пользователь не нестроен. Обратитесь в отдел АСУ.';
+			}
+		}
+
+		$this->data['error'] = $message;
+		$this->render('info', false);
+
+		$this->redirect([
+			'location' => '/',
+			'soft' => intval(!empty($message)),
+			'delay' => 10,
+		]);
+
+		$this->render('');
+	}
+	//	$result = $this->model->openAuth($uid);
 
 }

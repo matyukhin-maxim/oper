@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User: fellix
@@ -7,7 +6,14 @@
  * Time: 17:17
  */
 
-function get_param(& $source, $key = null, $def = false) {
+
+/**
+ * @param $source
+ * @param null $key
+ * @param bool $def
+ * @return bool | array
+ */
+function get_param(&$source, $key = null, $def = false) {
 	if ($key === null) {
 		return isset($source) ? $source : $def;
 	}
@@ -95,4 +101,31 @@ function mb_capitalize($str) {
 	$str = trim($str);
 	$fc = mb_strtoupper(mb_substr($str, 0, 1));
 	return $fc . mb_substr($str, 1);
+}
+
+/**
+ * Возвращает часть массива по списку ключей
+ * передынных в виде строки или массива
+ *
+ * @param array $data
+ * @param string|array $keys
+ * @param boolean $addempty
+ *
+ * @return array
+ */
+function get_array_part($data, $keys, $addempty = false) {
+
+	$result = [];
+
+	if (!is_array($keys)) {
+		$keys = explode(' ', $keys);
+	}
+
+	foreach ($keys as $key) {
+		$value = get_param($data, $key);
+		if ($value || $addempty)
+			$result[] = $value;
+	}
+
+	return $result;
 }

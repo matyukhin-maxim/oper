@@ -24,6 +24,10 @@ require_once 'core/Model.php';
 require_once 'core/Controller.php';
 
 
+// Для 'виджета' с температурой нужено подключение к ДОТу
+require_once 'core/CSQLServer.php';
+require_once 'models/DOTModel.php';
+
 
 // запоминаем какая страница была запрошена
 // чтобы вернутся на нее, если авторизация не выполненеа

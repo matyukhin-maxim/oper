@@ -73,7 +73,6 @@ class Journal extends Controller {
 					'location' => $this->generateURI($this->selfurl . 'preview/'),
 				));
 		}
-
 		$this->data['subtitle'] = ' :: Оперативная смена';
 		$this->js[] = 'message-handler';
 
@@ -102,9 +101,6 @@ class Journal extends Controller {
 
 			$msgList = $this->model->getShiftMessages($this->open_shift_id);
 
-			/**
-			 * todo   Шаблон открытой смены с редактированием сообщений нужно изменить
-			 */
 			$this->data['messages'] = $msgList;
 
 
@@ -338,7 +334,7 @@ class Journal extends Controller {
 			// а бежать отсюда, и как можно быстрее...
 			$this->appendDebug('Создание новой смены не требуеся. Смена уже открыта!');
 			$this->redirect(array(
-				'location' => $this->selfurl,
+				'location' => ROOT.$this->selfurl,
 			));
 		}
 
@@ -363,7 +359,7 @@ class Journal extends Controller {
 			}
 
 			$this->redirect(array(
-				'location' => $this->selfurl,
+				'location' => ROOT.$this->selfurl,
 			));
 		}
 
@@ -400,7 +396,7 @@ class Journal extends Controller {
 		if (!$this->isAjax()) {
 			$this->appendDebug('Нарушение прав доступа!');
 			$this->redirect(array(
-				'location' => $this->selfurl,
+				'location' => ROOT.$this->selfurl,
 			));
 		}
 
@@ -484,7 +480,7 @@ class Journal extends Controller {
 		if (!$this->isAjax()) {
 			$this->appendDebug('Нарушение прав доступа!');
 			$this->redirect(array(
-				'location' => $this->selfurl,
+				'location' => ROOT.$this->selfurl,
 			));
 		}
 

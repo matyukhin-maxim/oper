@@ -665,3 +665,21 @@ a.must {
 a.btn-default {
     background: none;
 }
+
+.temperature {
+    height: 50px;
+    margin: 0 3px;
+    padding: 7px 20px;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.temper-panel {
+
+    position: fixed;
+    top: 60px;
+    left: 10px;
+    width: 200px;
+    z-index: -10;
+}

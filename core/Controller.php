@@ -53,7 +53,9 @@ class Controller {
 	        'moment.min',
 	        'moment-ru',
         );
-        
+
+	    // Данные по температуре серверов будут тут
+	    $this->data['temper'] = '';
     }
     
     public function generateURI($ctrl, $args = array()) {

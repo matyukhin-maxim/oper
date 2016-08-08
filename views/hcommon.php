@@ -36,11 +36,11 @@
                     <ul class="nav navbar-nav">
                         <li><a href="/journal/">Текущая смена</a></li>
                         <li><a href="/journal/archive/">Архив</a></li>
-                        <!--<li><a href="/syncronization/">Синхронизация</a></li>-->
-                        <!--<li><a id="fuck" href="/syncronization/">Блокировка</a></li>-->
                     </ul>
 
                     <ul class="nav navbar-top-links navbar-right">
+	                    <?= $temper;?>
+
                         <?php if ($authdata === false): ?>
                             <li><a href="/auth/"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Вход</a>
                             </li>

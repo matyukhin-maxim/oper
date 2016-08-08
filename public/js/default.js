@@ -58,6 +58,9 @@ $(function () {
     $('.datepicker').datepicker();
 
 
+    // Температуру отодвинем немного от края
+    // $('.temperature:last').css('margin-right', '100px');
+
     /*
     var panel = $('.panel-message');
     if (panel.length) {
